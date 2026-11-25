@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spin360: zero-dependency 360° product viewer web component</title>
+  <meta name="description" content="Spin360 is a tiny, zero-dependency 360° product viewer web component. Drag, touch, keyboard, inertia, autoplay, lazy loading and sprite sheets. Under 5 KB gzipped.">
+  <meta property="og:title" content="Spin360: 360° product viewer web component">
+  <meta property="og:description" content="Drop-in 360° product spin for any website. Zero dependencies, under 5 KB gzipped.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ahmettasdemirusa.github.io/spin360/">
+  <meta property="og:image" content="https://ahmettasdemirusa.github.io/spin360/docs/social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://ahmettasdemirusa.github.io/spin360/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%84%3C/text%3E%3C/svg%3E">
+  <style>
+    :root { --bg:#f4f5f7; --panel:#fff; --text:#15171c; --muted:#5d6573; --line:#e3e6eb; --accent:#e4572e; --code:#0f1419; --code-text:#d6deeb; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#0d1117; --panel:#161b22; --text:#e6edf3; --muted:#9aa4b2; --line:#2b323c; --code:#0a0d12; } }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+    a { color: var(--accent); }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    header { padding: 28px 0 8px; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+    .brand { font-weight: 800; font-size: 20px; letter-spacing: -.01em; }
+    .gh { text-decoration:none; font-weight:600; color:var(--text); border:1px solid var(--line); border-radius:999px; padding:8px 14px; background:var(--panel); }
+    .hero { display:grid; grid-template-columns: 1.05fr 1fr; gap: 40px; align-items:center; padding: 28px 0 40px; }
+    h1 { font-size: clamp(34px, 5vw, 54px); line-height: 1.05; margin: 0 0 16px; letter-spacing: -.02em; }
+    .lede { color: var(--muted); font-size: 19px; margin: 0 0 22px; }
+    .pills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 26px; }
+    .pills span { font-size:13px; font-weight:600; border:1px solid var(--line); background:var(--panel); border-radius:999px; padding:6px 12px; }
+    .cta { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; padding:12px 20px; border-radius:10px; margin-right:10px; }
+    .stage { background: #f4f5f7; border-radius: 22px; box-shadow: 0 20px 60px rgba(0,0,0,.12); overflow:hidden; }
+    spin-360 { --spin360-accent: var(--accent); }
+    .swatches { display:flex; gap:10px; justify-content:center; align-items:center; padding: 14px; background: var(--panel); border-top:1px solid var(--line); }
+    .swatches button { width:30px; height:30px; border-radius:50%; border:3px solid transparent; cursor:pointer; box-shadow: 0 0 0 1px var(--line); }
+    .swatches button[aria-pressed="true"] { border-color: var(--panel); box-shadow: 0 0 0 2px var(--text); }
+    .angle { font: 600 13px ui-monospace, Consolas, monospace; color: var(--muted); min-width: 56px; text-align:right; }
+    section { padding: 34px 0; border-top: 1px solid var(--line); }
+    h2 { font-size: 28px; margin: 0 0 14px; letter-spacing: -.01em; }
+    pre { background: var(--code); color: var(--code-text); border-radius: 12px; padding: 18px; overflow:auto; font: 14px/1.55 ui-monospace, Consolas, monospace; }
+    code { font-family: ui-monospace, Consolas, monospace; font-size: .92em; }
+    table { width:100%; border-collapse: collapse; font-size: 15px; background: var(--panel); border-radius: 12px; overflow:hidden; }
+    th, td { text-align:left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items:start; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding: 18px; }
+    .series { display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .series a { display:block; text-decoration:none; color:var(--text); background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; }
+    .series a:hover { border-color: var(--accent); }
+    .series b { display:block; margin-bottom: 4px; }
+    .series small { color: var(--muted); }
+    footer { color: var(--muted); font-size: 14px; padding: 30px 0 50px; border-top:1px solid var(--line); }
+    .hero > *, .grid2 > *, .series > * { min-width: 0; } /* let long code lines scroll instead of widening the grid */
+    .table-wrap { overflow-x: auto; }
+    @media (max-width: 820px) { .hero, .grid2, .series { grid-template-columns: minmax(0, 1fr); } }
+  </style>
+  <script type="module" src="spin360.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">🔄 Spin360</div>
+      <a class="gh" href="https://github.com/ahmettasdemirusa/spin360">★ Star on GitHub</a>
+    </header>
+
+    <div class="hero">
+      <div>
+        <h1>360° product views in one HTML tag</h1>
+        <p class="lede">Spin360 is a tiny web component that turns an image sequence into a smooth, draggable 360° product view. No framework, no dependencies, no build step.</p>
+        <div class="pills"><span>0 dependencies</span><span>&lt; 5 KB gzipped</span><span>Touch · mouse · keyboard</span><span>Lazy loading</span><span>Sprite sheets</span></div>
+        <a class="cta" href="#install">Get started</a>
+        <a href="https://github.com/ahmettasdemirusa/spin360">View on GitHub →</a>
+      </div>
+      <div class="stage">
+        <spin-360 id="hero" src="demo/frames/tomato/{i}.webp" frames="36" pad="2" autoplay speed="10" eager alt="Ceramic mug, 360° view"></spin-360>
+        <div class="swatches" role="group" aria-label="Colorway">
+          <button style="background:#e4572e" data-color="tomato" aria-pressed="true" aria-label="Tomato"></button>
+          <button style="background:#2e86ab" data-color="ocean" aria-pressed="false" aria-label="Ocean"></button>
+          <button style="background:#3a7d44" data-color="forest" aria-pressed="false" aria-label="Forest"></button>
+          <span class="angle" id="angle">0°</span>
+        </div>
+      </div>
+    </div>
+
+    <section id="install">
+      <h2>Install</h2>
+      <p>Load the module, from a CDN or from your own copy, and add the tag:</p>
+<pre>&lt;script type="module" src="https://cdn.jsdelivr.net/gh/ahmettasdemirusa/spin360@v1.0.0/spin360.js"&gt;&lt;/script&gt;
+
+&lt;spin-360 src="/images/mug/{i}.webp" frames="36" pad="2" alt="Ceramic mug"&gt;&lt;/spin-360&gt;</pre>
+      <p><code>{i}</code> is replaced by the frame number. <code>pad="2"</code> turns it into <code>00</code>, <code>01</code> … <code>35</code>. The viewer takes the aspect ratio of your images and the width of its container.</p>
+    </section>
+
+    <section>
+      <div class="grid2">
+        <div>
+          <h2>One file, one request: sprite sheets</h2>
+          <p>Put every frame in a single image, in a grid, and tell Spin360 how many columns it has. This one is a 6 × 6 grid of 36 frames, about 100 KB in total.</p>
+<pre>&lt;spin-360 sprite="mug-sprite.webp"
+          frames="36" columns="6"&gt;&lt;/spin-360&gt;</pre>
+        </div>
+        <div class="card">
+          <spin-360 sprite="demo/frames/ocean-sprite.webp" frames="36" columns="6" alt="Ceramic mug, ocean blue, from a sprite sheet"></spin-360>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Attributes</h2>
+      <div class="table-wrap"><table>
+        <tr><th>Attribute</th><th>What it does</th></tr>
+        <tr><td><code>src</code></td><td>URL pattern for the frames, with <code>{i}</code> for the frame number</td></tr>
+        <tr><td><code>pad</code></td><td>Zero-pad the frame number to this many digits</td></tr>
+        <tr><td><code>sprite</code> · <code>columns</code></td><td>Use a single sprite-sheet image instead of separate files</td></tr>
+        <tr><td><code>frames</code></td><td>Number of frames (default 36)</td></tr>
+        <tr><td><code>start</code></td><td>Frame to show first</td></tr>
+        <tr><td><code>autoplay</code> · <code>speed</code></td><td>Turn on its own at <code>speed</code> frames per second (default 12). Stops on first interaction, and never starts for users who prefer reduced motion.</td></tr>
+        <tr><td><code>drag-speed</code></td><td>Drag sensitivity multiplier (default 1: one full turn per viewer width)</td></tr>
+        <tr><td><code>reverse</code></td><td>Invert the drag and arrow-key direction</td></tr>
+        <tr><td><code>no-loop</code></td><td>Stop at the first and last frame instead of wrapping around</td></tr>
+        <tr><td><code>no-inertia</code> · <code>no-hint</code></td><td>Turn off coasting after a flick, or the "Drag to rotate" hint</td></tr>
+        <tr><td><code>eager</code></td><td>Load immediately instead of when the viewer scrolls near the viewport</td></tr>
+        <tr><td><code>alt</code></td><td>Accessible label for screen readers</td></tr>
+      </table></div>
+    </section>
+
+    <section>
+      <div class="grid2">
+        <div>
+          <h2>JavaScript API</h2>
+<pre>const viewer = document.querySelector('spin-360');
+
+viewer.goTo(9);          // jump to a frame
+viewer.next(); viewer.prev();
+viewer.play(); viewer.pause();
+viewer.frame;            // current frame
+
+viewer.addEventListener('spin360:change', (e) =&gt;
+  console.log(e.detail.frame, e.detail.angle));
+viewer.addEventListener('spin360:load', () =&gt; {});
+
+// Switch colorway: the angle is kept
+viewer.setAttribute('src', '/img/blue/{i}.webp');</pre>
+        </div>
+        <div>
+          <h2>Accessible by default</h2>
+          <p>The viewer is a focusable <code>role="slider"</code> that announces its angle, e.g. "90°".</p>
+          <table>
+            <tr><th>Key</th><th>Action</th></tr>
+            <tr><td>← → ↑ ↓</td><td>Rotate one frame</td></tr>
+            <tr><td>Page Up / Down</td><td>Rotate 45°</td></tr>
+            <tr><td>Home / End</td><td>First / last frame</td></tr>
+            <tr><td>Space</td><td>Play / pause</td></tr>
+          </table>
+          <p>Style it with CSS custom properties: <code>--spin360-accent</code>, <code>--spin360-focus</code>, <code>--spin360-hint-bg</code>, <code>--spin360-hint-color</code>, or with <code>::part(canvas|progress|hint)</code>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Part of the 3D Web series</h2>
+      <div class="series">
+        <a href="https://github.com/ahmettasdemirusa/spin360"><b>🔄 Spin360</b><small>360° product viewer web component. You are here.</small></a>
+        <a href="https://github.com/ahmettasdemirusa/threejs-product-skills"><b>🧊 Three.js Product Skills</b><small>Teach AI coding agents to build 3D product viewers, configurators and 360° spins.</small></a>
+        <a href="https://github.com/ahmettasdemirusa/awesome-3d-web"><b>🌐 Awesome 3D Web</b><small>A curated list of libraries, tools and learning resources for 3D on the web.</small></a>
+      </div>
+    </section>
+
+    <footer>
+      MIT License · The demo mug is rendered with three.js by <code>tools/render.py</code> ·
+      Built by <a href="https://github.com/ahmettasdemirusa">Ahmet Tasdemir</a>
+    </footer>
+  </div>
+
+  <script type="module">
+    const hero = document.getElementById('hero');
+    const angle = document.getElementById('angle');
+    hero.addEventListener('spin360:change', (e) => { angle.textContent = e.detail.angle + '°'; });
+    document.querySelectorAll('.swatches button').forEach((b) => b.addEventListener('click', () => {
+      document.querySelectorAll('.swatches button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+      hero.setAttribute('src', `demo/frames/${b.dataset.color}/{i}.webp`);
+    }));
+  </script>
+</body>
+</html>
